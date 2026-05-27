@@ -1,0 +1,70 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u--(.*)": "@climblee/uv-ui/components/u-$1/u-$1.vue",
+      "^up-(.*)": "@climblee/uv-ui/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "@climblee/uv-ui/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "TODAY MISSION",
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d",
+        "backgroundTextStyle": "dark"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    },
+    {
+      "path": "pages/cardio/cardio",
+      "style": {
+        "navigationBarTitleText": "CARDIO",
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    },
+    {
+      "path": "pages/calendar/calendar",
+      "style": {
+        "navigationBarTitleText": "CALENDAR",
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "PROFILE",
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#5a6473",
+    "selectedColor": "#00ffa3",
+    "backgroundColor": "#070a13",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "训练" },
+      { "pagePath": "pages/cardio/cardio", "text": "有氧" },
+      { "pagePath": "pages/calendar/calendar", "text": "日历" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "Fitness HUD",
+    "navigationBarBackgroundColor": "#05070d",
+    "backgroundColor": "#05070d"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "fitness-mp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "沉浸式力量训练追踪小程序 (uni-app + Vue3 + TS + 微信云开发)",
+  "scripts": {
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:h5": "uni",
+    "build:h5": "uni build",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "vue3",
+    "@dcloudio/uni-app-plus": "vue3",
+    "@dcloudio/uni-components": "vue3",
+    "@dcloudio/uni-h5": "vue3",
+    "@dcloudio/uni-mp-weixin": "vue3",
+    "@climblee/uv-ui": "^1.0.40",
+    "pinia": "2.0.36",
+    "vue": "3.4.21",
+    "vue-i18n": "9.1.9"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/uni-automator": "vue3",
+    "@dcloudio/uni-cli-shared": "vue3",
+    "@dcloudio/uni-stacktracey": "vue3",
+    "@dcloudio/vite-plugin-uni": "vue3",
+    "@types/wechat-miniprogram": "^3.4.7",
+    "@vue/tsconfig": "^0.5.1",
+    "sass": "^1.77.0",
+    "typescript": "^5.4.5",
+    "vite": "5.2.8",
+    "vue-tsc": "^2.0.13"
+  }
+}

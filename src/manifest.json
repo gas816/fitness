@@ -1,0 +1,22 @@
+{
+  "name": "Fitness HUD",
+  "appid": "wx775616bb0c034838",
+  "description": "沉浸式力量训练追踪",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true,
+      "postcss": true
+    },
+    "usingComponents": true,
+    "cloudfunctionRoot": "cloudfunctions/",
+    "permission": {},
+    "lazyCodeLoading": "requiredComponents"
+  },
+  "vueVersion": "3"
+}

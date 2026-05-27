@@ -1,0 +1,135 @@
+@mixin neon-text($c: #00ffa3) {
+  color: $c;
+  text-shadow:
+    0 0 4px rgba($c, 0.9),
+    0 0 12px rgba($c, 0.6),
+    0 0 24px rgba($c, 0.35);
+}
+
+@mixin neon-border($c: #00ffa3) {
+  border: 1rpx solid rgba($c, 0.6);
+  box-shadow:
+    inset 0 0 12rpx rgba($c, 0.25),
+    0 0 18rpx rgba($c, 0.35);
+}
+
+.cyber-card {
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 212, 255, 0.08),
+    rgba(0, 255, 163, 0.04)
+  );
+  border-radius: 24rpx;
+  padding: 32rpx;
+  overflow: hidden;
+  @include neon-border(#00d4ff);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 50%,
+        rgba(0, 255, 163, 0.06) 100%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 212, 255, 0.04) 0,
+        rgba(0, 212, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    pointer-events: none;
+  }
+}
+
+.neon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 60rpx;
+  border-radius: 999rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+  color: #05070d;
+  background: linear-gradient(120deg, #00ffa3, #00d4ff);
+  box-shadow:
+    0 0 24rpx rgba(0, 255, 163, 0.55),
+    0 0 64rpx rgba(0, 212, 255, 0.35);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow:
+      0 0 12rpx rgba(0, 255, 163, 0.4),
+      0 0 32rpx rgba(0, 212, 255, 0.2);
+  }
+}
+
+.neon-title {
+  font-size: 56rpx;
+  font-weight: 800;
+  letter-spacing: 8rpx;
+  @include neon-text(#00ffa3);
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 12rpx rgba(0, 255, 163, 0.35),
+      0 0 36rpx rgba(0, 212, 255, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 28rpx rgba(0, 255, 163, 0.85),
+      0 0 80rpx rgba(0, 212, 255, 0.55);
+  }
+}
+
+@keyframes number-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.6);
+    filter: drop-shadow(0 0 16rpx #00ffa3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes card-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120rpx) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(120vh);
+  }
+}
+
+@keyframes ring-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

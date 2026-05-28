@@ -50,6 +50,7 @@
 
       <text class="ver">v1.0.0 · MADE FOR THE STRONG</text>
     </view>
+    <CustomTabBar :current="3" />
   </view>
 </template>
 
@@ -59,6 +60,7 @@ import CyberBg from "@/components/CyberBg.vue";
 import { useUserStore } from "@/stores/user";
 import { useWorkoutStore } from "@/stores/workout";
 import { fetchStats } from "@/api/workout";
+import CustomTabBar from "@/components/CustomTabBar.vue";
 
 const user = useUserStore();
 const workout = useWorkoutStore();
@@ -108,7 +110,7 @@ function logout() {
 .content {
   position: relative;
   z-index: 1;
-  padding: 140rpx 32rpx 80rpx;
+  padding: 140rpx 32rpx 200rpx;
 }
 .head {
   display: flex;

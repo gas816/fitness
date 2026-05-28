@@ -50,9 +50,10 @@
     }
   ],
   "tabBar": {
+    "custom": true,
     "color": "#5a6473",
     "selectedColor": "#00ffa3",
-    "backgroundColor": "#070a13",
+    "backgroundColor": "#05070d",
     "borderStyle": "black",
     "list": [
       { "pagePath": "pages/index/index", "text": "训练" },

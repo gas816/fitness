@@ -46,17 +46,27 @@
             <text class="unit">MIN</text>
           </view>
         </view>
-        <view class="row">
-          <text class="row-l">强度</text>
-          <view class="intensity">
-            <view
-              v-for="n in 10"
-              :key="n"
-              class="bar"
-              :class="{ on: n <= form.intensity }"
-              :style="{ height: 20 + n * 4 + 'rpx' }"
-              @tap="form.intensity = n"
-            />
+        <view class="row col">
+          <view class="row-head">
+            <text class="row-l">强度</text>
+            <text class="intensity-val">{{ form.intensity }} / 10</text>
+          </view>
+          <slider
+            class="intensity-slider"
+            :value="form.intensity"
+            :min="1"
+            :max="10"
+            :step="1"
+            block-size="28"
+            block-color="#00ffa3"
+            activeColor="#00ffa3"
+            backgroundColor="rgba(255,255,255,0.08)"
+            @changing="onIntensityChanging"
+            @change="onIntensityChange"
+          />
+          <view class="intensity-scale">
+            <text>EASY</text>
+            <text>MAX</text>
           </view>
         </view>
         <view class="row">
@@ -75,6 +85,7 @@
         <view v-else class="neon-btn stop" @tap="stop">FINISH</view>
       </view>
     </view>
+    <CustomTabBar :current="1" />
   </view>
 </template>
 
@@ -82,6 +93,7 @@
 import { computed, onUnmounted, reactive, ref } from "vue";
 import CyberBg from "@/components/CyberBg.vue";
 import RingProgress from "@/components/RingProgress.vue";
+import CustomTabBar from "@/components/CustomTabBar.vue";
 import { CARDIO_OPTIONS } from "@/constants/workouts";
 import { saveCardio } from "@/api/cardio";
 import { todayStr } from "@/utils/date";
@@ -121,6 +133,21 @@ function start() {
   }, 1000);
 }
 
+function onIntensityChanging(e: any) {
+  const v = Number(e?.detail?.value);
+  if (!Number.isNaN(v) && v !== form.intensity) {
+    form.intensity = v;
+    haptic("light");
+  }
+}
+function onIntensityChange(e: any) {
+  const v = Number(e?.detail?.value);
+  if (!Number.isNaN(v)) {
+    form.intensity = v;
+    haptic("medium");
+  }
+}
+
 async function stop() {
   if (timer) {
     clearInterval(timer);
@@ -155,7 +182,7 @@ onUnmounted(() => {
 .content {
   position: relative;
   z-index: 1;
-  padding: 120rpx 32rpx 80rpx;
+  padding: 120rpx 32rpx 200rpx;
 }
 .sub {
   display: block;
@@ -202,7 +229,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 60rpx 0 40rpx;
+  margin: 140rpx 0 80rpx;
+  padding-top: 40rpx;
   animation: pulse-glow 3s ease-in-out infinite;
 }
 .ring-content {
@@ -271,20 +299,34 @@ onUnmounted(() => {
   margin-left: 6rpx;
   letter-spacing: 3rpx;
 }
-.intensity {
-  display: flex;
-  align-items: flex-end;
+.row.col {
+  flex-direction: column;
+  align-items: stretch;
   gap: 8rpx;
 }
-.bar {
-  width: 18rpx;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4rpx;
-  transition: all 0.2s;
-  &.on {
-    background: linear-gradient(180deg, #00ffa3, #00d4ff);
-    box-shadow: 0 0 12rpx rgba(0, 255, 163, 0.6);
-  }
+.row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.intensity-val {
+  color: #00ffa3;
+  font-weight: 800;
+  font-size: 30rpx;
+  letter-spacing: 2rpx;
+  text-shadow: 0 0 10rpx rgba(0, 255, 163, 0.6);
+}
+.intensity-slider {
+  margin: 8rpx 4rpx 0;
+}
+.intensity-scale {
+  display: flex;
+  justify-content: space-between;
+  color: #5a6473;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+  margin-top: 4rpx;
+  padding: 0 6rpx;
 }
 .ipt {
   flex: 1;

@@ -81,6 +81,7 @@
       :minutes="durationMinutes"
       @close="flow.hideMission()"
     />
+    <CustomTabBar :current="0" />
   </view>
 </template>
 
@@ -91,6 +92,7 @@ import CyberBg from "@/components/CyberBg.vue";
 import ExerciseCard from "@/components/ExerciseCard.vue";
 import RingProgress from "@/components/RingProgress.vue";
 import MissionComplete from "@/components/MissionComplete.vue";
+import CustomTabBar from "@/components/CustomTabBar.vue";
 import { useUserStore } from "@/stores/user";
 import { useWorkoutStore } from "@/stores/workout";
 import { useWorkoutFlow } from "@/composables/useWorkoutFlow";
@@ -163,7 +165,7 @@ function goCardio() {
 .content {
   position: relative;
   z-index: 1;
-  padding: 120rpx 32rpx 80rpx;
+  padding: 120rpx 32rpx 200rpx;
 }
 .header {
   display: flex;

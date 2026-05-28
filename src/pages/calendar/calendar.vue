@@ -25,6 +25,18 @@
         </view>
       </view>
 
+      <view class="legend">
+        <view class="lg"><view class="sw plan-s" /><text>计划力量</text></view>
+        <view class="lg"><view class="sw plan-c" /><text>计划有氧</text></view>
+        <view class="lg"
+          ><view class="sw done-s" /><text>已完成力量</text></view
+        >
+        <view class="lg"
+          ><view class="sw done-c" /><text>已完成有氧</text></view
+        >
+        <view class="lg"><view class="sw rest" /><text>休息</text></view>
+      </view>
+
       <view class="week">
         <text v-for="w in WEEK" :key="w">{{ w }}</text>
       </view>
@@ -34,20 +46,22 @@
             v-for="(d, ci) in row"
             :key="ci"
             class="cell"
-            :class="{
-              empty: !d,
-              today: d === today,
-              strength: d && marks[d]?.kind === 'S',
-              cardio: d && marks[d]?.kind === 'C',
-              both: d && marks[d]?.kind === 'B',
-            }"
+            :class="cellClass(d)"
             @tap="d && open(d)"
           >
+            <text
+              class="plan-tag"
+              v-if="d && plans[d] && plans[d] !== 'REST'"
+              >{{ plans[d] === "C" ? "C" : "S" }}</text
+            >
             <text class="d-num">{{ d ? Number(d.slice(-2)) : "" }}</text>
             <view class="dot-row" v-if="d && marks[d]">
               <view class="dot s" v-if="marks[d].hasS" />
               <view class="dot c" v-if="marks[d].hasC" />
             </view>
+            <text class="rest-mark" v-else-if="d && plans[d] === 'REST'"
+              >·</text
+            >
           </view>
         </view>
       </view>
@@ -75,6 +89,7 @@
         >
       </view>
     </view>
+    <CustomTabBar :current="2" />
   </view>
 </template>
 
@@ -84,10 +99,21 @@ import CyberBg from "@/components/CyberBg.vue";
 import { buildMonthMatrix, todayStr } from "@/utils/date";
 import { fetchMonthRecords } from "@/api/workout";
 import { fetchCardioMonth } from "@/api/cardio";
+import CustomTabBar from "@/components/CustomTabBar.vue";
 import { CARDIO_LABEL } from "@/constants/workouts";
 import type { CardioRecordDoc, WorkoutRecordDoc, CardioType } from "@/types";
 
 const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
+
+// 计划类型：周 1/3/5 力量，周 6 有氧，其他休息日
+function planOf(dateStr: string): "S" | "C" | "REST" {
+  // dateStr: YYYY-MM-DD
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const w = new Date(y, m - 1, d).getDay();
+  if (w === 1 || w === 3 || w === 5) return "S";
+  if (w === 6) return "C";
+  return "REST";
+}
 
 const now = new Date();
 const year = ref(now.getFullYear());
@@ -119,6 +145,31 @@ const marks = computed(() => {
   });
   return m;
 });
+
+const plans = computed(() => {
+  const map: Record<string, "S" | "C" | "REST"> = {};
+  matrix.value.forEach((row) =>
+    row.forEach((d) => {
+      if (d) map[d] = planOf(d);
+    }),
+  );
+  return map;
+});
+
+function cellClass(d: string | null) {
+  if (!d) return { empty: true };
+  const mk = marks.value[d];
+  const pl = plans.value[d];
+  return {
+    today: d === today,
+    strength: mk?.kind === "S",
+    cardio: mk?.kind === "C",
+    both: mk?.kind === "B",
+    "plan-strength": !mk && pl === "S",
+    "plan-cardio": !mk && pl === "C",
+    "plan-rest": !mk && pl === "REST",
+  };
+}
 
 const streak = computed(() => {
   // 连续训练天数（从今天往前找）
@@ -208,7 +259,7 @@ onMounted(load);
 .content {
   position: relative;
   z-index: 1;
-  padding: 120rpx 32rpx 80rpx;
+  padding: 120rpx 32rpx 200rpx;
 }
 .head {
   display: flex;
@@ -276,6 +327,52 @@ onMounted(load);
     letter-spacing: 4rpx;
   }
 }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx 24rpx;
+  margin: 24rpx 0 4rpx;
+  padding: 0 8rpx;
+}
+.lg {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #b9c4d6;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+}
+.sw {
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: 6rpx;
+  &.plan-s {
+    border: 1rpx dashed rgba(0, 255, 163, 0.7);
+  }
+  &.plan-c {
+    border: 1rpx dashed rgba(0, 212, 255, 0.7);
+  }
+  &.done-s {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 255, 163, 0.6),
+      rgba(0, 255, 163, 0.15)
+    );
+    box-shadow: inset 0 0 0 1rpx rgba(0, 255, 163, 0.7);
+  }
+  &.done-c {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 212, 255, 0.6),
+      rgba(0, 212, 255, 0.15)
+    );
+    box-shadow: inset 0 0 0 1rpx rgba(0, 212, 255, 0.7);
+  }
+  &.rest {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1rpx solid rgba(255, 255, 255, 0.08);
+  }
+}
 .cal {
   padding: 0 8rpx;
 }
@@ -300,27 +397,81 @@ onMounted(load);
   &.today {
     box-shadow: inset 0 0 0 2rpx rgba(0, 212, 255, 0.7);
   }
+  // 计划状态（未完成）
+  &.plan-strength {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1rpx dashed rgba(0, 255, 163, 0.45);
+  }
+  &.plan-cardio {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1rpx dashed rgba(0, 212, 255, 0.45);
+  }
+  &.plan-rest {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1rpx solid rgba(255, 255, 255, 0.05);
+    .d-num {
+      color: #5a6473;
+    }
+  }
+  // 实际完成（填色覆盖计划描边）
   &.strength {
+    border: none;
     background: linear-gradient(
       180deg,
-      rgba(0, 255, 163, 0.18),
-      rgba(0, 255, 163, 0.04)
-    );
-  }
-  &.cardio {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 212, 255, 0.18),
-      rgba(0, 212, 255, 0.04)
-    );
-  }
-  &.both {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 43, 214, 0.22),
+      rgba(0, 255, 163, 0.28),
       rgba(0, 255, 163, 0.06)
     );
+    box-shadow: inset 0 0 0 1rpx rgba(0, 255, 163, 0.55);
   }
+  &.cardio {
+    border: none;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 212, 255, 0.28),
+      rgba(0, 212, 255, 0.06)
+    );
+    box-shadow: inset 0 0 0 1rpx rgba(0, 212, 255, 0.55);
+  }
+  &.both {
+    border: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 43, 214, 0.3),
+      rgba(0, 255, 163, 0.08)
+    );
+    box-shadow: inset 0 0 0 1rpx rgba(255, 43, 214, 0.55);
+  }
+}
+.plan-tag {
+  position: absolute;
+  top: 4rpx;
+  right: 6rpx;
+  font-size: 18rpx;
+  font-weight: 800;
+  letter-spacing: 1rpx;
+  padding: 0 6rpx;
+  border-radius: 6rpx;
+  line-height: 22rpx;
+  color: #05070d;
+}
+.plan-strength .plan-tag {
+  background: rgba(0, 255, 163, 0.65);
+}
+.plan-cardio .plan-tag {
+  background: rgba(0, 212, 255, 0.65);
+}
+.strength .plan-tag,
+.both .plan-tag {
+  background: rgba(0, 255, 163, 0.85);
+}
+.cardio .plan-tag {
+  background: rgba(0, 212, 255, 0.85);
+}
+.rest-mark {
+  margin-top: 6rpx;
+  color: #3a4252;
+  font-size: 26rpx;
+  line-height: 1;
 }
 .d-num {
   color: #e8f0ff;

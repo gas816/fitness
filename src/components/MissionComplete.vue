@@ -68,7 +68,7 @@ defineEmits<{ (e: "close"): void }>();
   height: 240rpx;
   border-radius: 50%;
   border: 2rpx dashed rgba(0, 255, 163, 0.6);
-  animation: ring-rotate 8s linear infinite;
+  animation: ring-rotate 12s linear infinite;
   &::before {
     content: "";
     position: absolute;

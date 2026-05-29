@@ -143,7 +143,7 @@ function logout() {
   inset: -16rpx;
   border-radius: 50%;
   border: 1rpx dashed rgba(0, 212, 255, 0.5);
-  animation: ring-rotate 14s linear infinite;
+  animation: ring-rotate 12s linear infinite;
 }
 .name {
   margin-top: 28rpx;

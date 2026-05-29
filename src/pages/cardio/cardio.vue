@@ -231,7 +231,7 @@ onUnmounted(() => {
   align-items: center;
   margin: 140rpx 0 80rpx;
   padding-top: 40rpx;
-  animation: pulse-glow 3s ease-in-out infinite;
+  animation: pulse-glow 3.6s ease-in-out infinite;
 }
 .ring-content {
   display: flex;

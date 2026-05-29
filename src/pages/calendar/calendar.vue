@@ -111,7 +111,7 @@ function planOf(dateStr: string): "S" | "C" | "REST" {
   const [y, m, d] = dateStr.split("-").map(Number);
   const w = new Date(y, m - 1, d).getDay();
   if (w === 1 || w === 3 || w === 5) return "S";
-  if (w === 6) return "C";
+  if (w === 2 || w === 6) return "C";
   return "REST";
 }
 
@@ -380,6 +380,7 @@ onMounted(load);
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8rpx;
+  margin-bottom: 8rpx;
 }
 .cell {
   position: relative;

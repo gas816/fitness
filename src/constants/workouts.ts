@@ -110,6 +110,7 @@ export function getTodayTemplate(date = new Date()): WorkoutTemplate | null {
       return WORKOUT_B;
     case 5:
       return WORKOUT_C;
+    case 2:
     case 6:
       return CARDIO_TEMPLATE;
     default:

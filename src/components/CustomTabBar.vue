@@ -20,7 +20,7 @@
 defineProps<{ current: number }>();
 
 const tabs = [
-  { path: "/pages/index/index", text: "训练", icon: "💪" },
+  { path: "/pages/index/index", text: "力量", icon: "💪" },
   { path: "/pages/cardio/cardio", text: "有氧", icon: "🔥" },
   { path: "/pages/calendar/calendar", text: "日历", icon: "📅" },
   { path: "/pages/profile/profile", text: "我的", icon: "👤" },

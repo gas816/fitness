@@ -56,7 +56,7 @@
     "backgroundColor": "#05070d",
     "borderStyle": "black",
     "list": [
-      { "pagePath": "pages/index/index", "text": "训练" },
+      { "pagePath": "pages/index/index", "text": "力量" },
       { "pagePath": "pages/cardio/cardio", "text": "有氧" },
       { "pagePath": "pages/calendar/calendar", "text": "日历" },
       { "pagePath": "pages/profile/profile", "text": "我的" }

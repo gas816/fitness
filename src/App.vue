@@ -26,7 +26,36 @@ onShow(() => {
 @import "@/styles/cyber.scss";
 
 page {
-  background: #05070d;
+  /* 整套赛博背景固化在 page 上：切 tab 时背景完全一致，
+     不会因为组件重新挂载/动画重启产生顿挫感 */
+  background-color: #04060b;
+  background-image:
+    radial-gradient(
+      ellipse at 20% 0%,
+      rgba(0, 212, 255, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 80% 100%,
+      rgba(0, 255, 163, 0.16),
+      transparent 55%
+    ),
+    linear-gradient(rgba(0, 212, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, #05070d 0%, #04060b 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    80rpx 80rpx,
+    80rpx 80rpx,
+    100% 100%;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat;
+  background-position:
+    top left,
+    bottom right,
+    top left,
+    top left,
+    top left;
   color: #e8f0ff;
   font-family:
     -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",

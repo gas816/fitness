@@ -8,9 +8,14 @@ import type {
 import { getTodayTemplate } from "@/constants/workouts";
 import { fetchTodayRecord, saveRecord } from "@/api/workout";
 import { todayStr } from "@/utils/date";
+import { usePlanStore } from "@/stores/plan";
 
 interface State {
   template: WorkoutTemplate | null;
+  /** 今日训练标题（自定义计划名） */
+  title: string;
+  /** 是否为休息日 */
+  isRest: boolean;
   exercises: Exercise[];
   currentIndex: number;
   startedAt: number;
@@ -32,6 +37,8 @@ function hydrate(t: WorkoutTemplate): Exercise[] {
 export const useWorkoutStore = defineStore("workout", {
   state: (): State => ({
     template: null,
+    title: "",
+    isRest: false,
     exercises: [],
     currentIndex: 0,
     startedAt: 0,
@@ -67,20 +74,76 @@ export const useWorkoutStore = defineStore("workout", {
   },
 
   actions: {
-    /** 进入页面：根据星期加载今日模板并尝试拉取云端进度 */
+    /** 进入页面：优先读取用户启用的自定义计划；无则回退内置星期模板 */
     async loadToday() {
       this.loading = true;
       this.finished = false;
       try {
-        const tpl = getTodayTemplate();
-        this.template = tpl;
-        if (!tpl) {
-          this.exercises = [];
-          return;
-        }
-        if (tpl.type === "CARDIO") {
-          this.exercises = [];
-          return;
+        const plan = usePlanStore();
+        await plan.loadTemplates();
+
+        let planExercises: Exercise[] | null = null;
+        let workoutType: "A" | "B" | "C" | "CARDIO" | "CUSTOM" | "REST" =
+          "CUSTOM";
+
+        if (plan.hasTemplate) {
+          const today = plan.todayPlan();
+          this.title = today.templateName;
+          if (today.rest || today.exercises.length === 0) {
+            // 自定义计划的休息日
+            this.template = null;
+            this.isRest = true;
+            this.exercises = [];
+            return;
+          }
+          this.isRest = false;
+          planExercises = today.exercises.map((pe) => {
+            const isCardio = pe.category === "cardio";
+            const totalSets = isCardio ? 1 : pe.sets;
+            const repRange = isCardio
+              ? `${pe.duration || 0}分钟·${pe.intensity || "中等"}`
+              : pe.reps;
+            return {
+              id: pe.id,
+              name: pe.name,
+              totalSets,
+              repRange,
+              sets: Array.from(
+                { length: totalSets },
+                () => ({ done: false }) as ExerciseSet,
+              ),
+            };
+          });
+          // 用一个轻量 template 占位，保证 flush 正常
+          this.template = {
+            type: "CUSTOM",
+            title: today.templateName,
+            subtitle: "CUSTOM PLAN",
+            weekday: new Date().getDay(),
+            exercises: today.exercises.map((pe) => {
+              const isCardio = pe.category === "cardio";
+              return {
+                id: pe.id,
+                name: pe.name,
+                totalSets: isCardio ? 1 : pe.sets,
+                repRange: isCardio
+                  ? `${pe.duration || 0}分钟·${pe.intensity || "中等"}`
+                  : pe.reps,
+              };
+            }),
+          };
+        } else {
+          // 回退：内置星期模板
+          const tpl = getTodayTemplate();
+          this.template = tpl;
+          this.title = tpl?.title || "";
+          if (!tpl || tpl.type === "CARDIO") {
+            this.isRest = !tpl;
+            this.exercises = [];
+            return;
+          }
+          this.isRest = false;
+          workoutType = tpl.type;
         }
 
         const date = todayStr();
@@ -91,12 +154,13 @@ export const useWorkoutStore = defineStore("workout", {
           /* 网络异常容错 */
         }
 
-        if (remote && remote.workoutType === tpl.type) {
+        const expectedType = this.template?.type ?? workoutType;
+        if (remote && remote.workoutType === expectedType) {
           this.exercises = remote.exercises;
           this.finished = remote.completed;
           this.startedAt = remote.createdAt || Date.now();
         } else {
-          this.exercises = hydrate(tpl);
+          this.exercises = planExercises ?? hydrate(this.template!);
           this.startedAt = Date.now();
         }
 
@@ -155,6 +219,7 @@ export const useWorkoutStore = defineStore("workout", {
         await saveRecord({
           date: todayStr(),
           workoutType: this.template.type,
+          title: this.title || undefined,
           exercises: this.exercises,
           completed: this.allDone,
           duration: Math.max(

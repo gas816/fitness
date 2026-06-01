@@ -25,6 +25,28 @@
       }
     },
     {
+      "path": "pages/onboarding/onboarding",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    },
+    {
+      "path": "pages/plan-editor/plan-editor",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d",
+        "disableScroll": false
+      }
+    },
+    {
+      "path": "pages/template-list/template-list",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#05070d"
+      }
+    },
+    {
       "path": "pages/cardio/cardio",
       "style": {
         "navigationBarTitleText": "CARDIO",

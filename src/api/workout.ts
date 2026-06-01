@@ -13,6 +13,7 @@ export async function fetchTodayRecord(
 export async function saveRecord(payload: {
   date: string;
   workoutType: WorkoutType;
+  title?: string;
   exercises: Exercise[];
   completed: boolean;
   duration: number;

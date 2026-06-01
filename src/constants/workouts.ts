@@ -1,4 +1,11 @@
-import type { WorkoutTemplate, CardioType } from "@/types";
+import type {
+  WorkoutTemplate,
+  CardioType,
+  WeekdayKey,
+  PlanDay,
+  PlanExercise,
+  PlanTemplate,
+} from "@/types";
 
 export const CARDIO_LABEL: Record<CardioType, string> = {
   STAIR: "爬楼机",
@@ -116,4 +123,109 @@ export function getTodayTemplate(date = new Date()): WorkoutTemplate | null {
     default:
       return null;
   }
+}
+
+/** 星期键，按 JS getDay() (0=周日) 索引 */
+export const WEEKDAY_KEYS: WeekdayKey[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
+/** 用于界面展示的星期顺序（周一开头） */
+export const WEEK_ORDER: WeekdayKey[] = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+export const WEEKDAY_LABEL: Record<WeekdayKey, string> = {
+  monday: "周一",
+  tuesday: "周二",
+  wednesday: "周三",
+  thursday: "周四",
+  friday: "周五",
+  saturday: "周六",
+  sunday: "周日",
+};
+
+export function todayWeekdayKey(date = new Date()): WeekdayKey {
+  return WEEKDAY_KEYS[date.getDay()];
+}
+
+let _uid = 0;
+function pid(): string {
+  _uid += 1;
+  return `pe_${Date.now().toString(36)}_${_uid}`;
+}
+
+function emptyDay(): PlanDay {
+  return { rest: true, exercises: [] };
+}
+
+function dayFrom(tpl: WorkoutTemplate, cat: PlanExercise["category"]): PlanDay {
+  return {
+    rest: false,
+    exercises: tpl.exercises.map((e, i) => ({
+      id: pid(),
+      exerciseId: e.id,
+      name: e.name,
+      category: cat,
+      sets: e.totalSets,
+      reps: e.repRange,
+      sort: i,
+    })),
+  };
+}
+
+/** 由内置力量 A/B/C + 有氧构建一份「推荐计划」模板 */
+export function buildRecommendedTemplate(): PlanTemplate {
+  const now = Date.now();
+  return {
+    name: "新手推荐计划",
+    active: true,
+    createdAt: now,
+    updatedAt: now,
+    days: {
+      monday: dayFrom(WORKOUT_A, "legs"),
+      tuesday: emptyDay(),
+      wednesday: dayFrom(WORKOUT_B, "back"),
+      thursday: emptyDay(),
+      friday: dayFrom(WORKOUT_C, "legs"),
+      saturday: { rest: false, exercises: [] },
+      sunday: emptyDay(),
+    },
+  };
+}
+
+/** 新建一份空白模板 */
+export function buildEmptyTemplate(name = "我的训练计划"): PlanTemplate {
+  const now = Date.now();
+  return {
+    name,
+    active: false,
+    createdAt: now,
+    updatedAt: now,
+    days: {
+      monday: emptyDay(),
+      tuesday: emptyDay(),
+      wednesday: emptyDay(),
+      thursday: emptyDay(),
+      friday: emptyDay(),
+      saturday: emptyDay(),
+      sunday: emptyDay(),
+    },
+  };
+}
+
+export function genPlanExerciseId(): string {
+  return pid();
 }

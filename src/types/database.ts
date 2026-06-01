@@ -9,7 +9,71 @@ export interface UserDoc {
   lastLoginAt: number;
 }
 
-export type WorkoutType = "A" | "B" | "C" | "CARDIO" | "REST";
+export type WorkoutType = "A" | "B" | "C" | "CARDIO" | "REST" | "CUSTOM";
+
+/** 动作分类 */
+export type ExerciseCategory =
+  | "chest"
+  | "back"
+  | "legs"
+  | "shoulder"
+  | "arm"
+  | "core"
+  | "cardio";
+
+/** 动作库中的一个动作 */
+export interface LibExercise {
+  id: string;
+  name: string;
+  category: ExerciseCategory;
+}
+
+/** 星期键（与云端 days 字段对齐） */
+export type WeekdayKey =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+/** 训练计划中的单个动作配置 */
+export interface PlanExercise {
+  /** 实例唯一 id（用于拖拽 key） */
+  id: string;
+  /** 引用动作库 id */
+  exerciseId: string;
+  name: string;
+  category: ExerciseCategory;
+  sets: number;
+  /** 次数，如 "10" 或 "8-12" */
+  reps: string;
+  /** 有氧专用：时长（分钟） */
+  duration?: number;
+  /** 有氧专用：强度，如 "中等" */
+  intensity?: string;
+  sort: number;
+}
+
+/** 一天的训练安排 */
+export interface PlanDay {
+  rest: boolean;
+  exercises: PlanExercise[];
+}
+
+/** 用户训练计划模板 */
+export interface PlanTemplate {
+  _id?: string;
+  userId?: string;
+  name: string;
+  /** 七天计划 */
+  days: Record<WeekdayKey, PlanDay>;
+  /** 是否为当前启用模板 */
+  active: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
 
 export interface ExerciseSet {
   /** 是否完成 */
@@ -50,6 +114,8 @@ export interface WorkoutRecordDoc {
   userId: string;
   date: string; // YYYY-MM-DD
   workoutType: WorkoutType;
+  /** 自定义计划的可读标题（如「胸 + 三头」），优先于 workoutType 展示 */
+  title?: string;
   exercises: Exercise[];
   completed: boolean;
   duration: number; // 秒

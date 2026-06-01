@@ -70,7 +70,7 @@
         <text class="dt-title">{{ active }}</text>
         <view v-if="activeWorkout" class="cyber-card mt">
           <text class="x-title"
-            >力量 {{ activeWorkout.workoutType }} ·
+            >{{ workoutLabel(activeWorkout) }} ·
             {{ activeWorkout.completed ? "COMPLETED" : "IN PROGRESS" }}</text
           >
           <text class="x-meta"
@@ -214,6 +214,12 @@ const activeSets = computed(() => {
 
 function cardioLbl(t: CardioType) {
   return CARDIO_LABEL[t];
+}
+
+function workoutLabel(w: WorkoutRecordDoc) {
+  if (w.title) return w.title;
+  if (w.workoutType === "CUSTOM") return "自定义训练";
+  return `力量 ${w.workoutType}`;
 }
 
 function shift(n: number) {

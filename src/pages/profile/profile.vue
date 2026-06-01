@@ -37,6 +37,9 @@
       </view>
 
       <view class="menu">
+        <view class="item" @tap="goTemplates">
+          <text class="m-l">我的训练计划</text><text class="m-r">›</text>
+        </view>
         <view class="item" @tap="goCalendar">
           <text class="m-l">训练日历</text><text class="m-r">›</text>
         </view>
@@ -79,6 +82,10 @@ onMounted(async () => {
 
 function goCalendar() {
   uni.switchTab({ url: "/pages/calendar/calendar" });
+}
+
+function goTemplates() {
+  uni.navigateTo({ url: "/pages/template-list/template-list" });
 }
 
 function resetToday() {

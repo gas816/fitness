@@ -17,7 +17,9 @@
       </view>
 
       <view class="title-block" v-if="store.template">
-        <text class="neon-title">{{ store.template.title }}</text>
+        <text class="neon-title">{{
+          store.title || store.template.title
+        }}</text>
         <text class="sub">{{ store.template.subtitle }}</text>
       </view>
 
@@ -95,11 +97,13 @@ import MissionComplete from "@/components/MissionComplete.vue";
 import CustomTabBar from "@/components/CustomTabBar.vue";
 import { useUserStore } from "@/stores/user";
 import { useWorkoutStore } from "@/stores/workout";
+import { usePlanStore } from "@/stores/plan";
 import { useWorkoutFlow } from "@/composables/useWorkoutFlow";
 import { haptic, playDone, playMission } from "@/utils/haptic";
 
 const user = useUserStore();
 const store = useWorkoutStore();
+const plan = usePlanStore();
 const flow = useWorkoutFlow();
 
 const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
@@ -122,6 +126,11 @@ onMounted(() => store.loadToday());
 onShow(() => {
   if (!user.isLogin) {
     uni.reLaunch({ url: "/pages/login/login" });
+    return;
+  }
+  // 无训练模板 → 引导创建
+  if (plan.loaded && !plan.hasTemplate) {
+    uni.reLaunch({ url: "/pages/onboarding/onboarding" });
     return;
   }
   store.loadToday();

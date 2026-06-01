@@ -74,9 +74,11 @@
 import { computed, ref } from "vue";
 import CyberBg from "@/components/CyberBg.vue";
 import { useUserStore } from "@/stores/user";
+import { usePlanStore } from "@/stores/plan";
 import { haptic } from "@/utils/haptic";
 
 const user = useUserStore();
+const plan = usePlanStore();
 const loading = ref(false);
 const showProfile = ref(false);
 const avatar = ref("");
@@ -103,7 +105,13 @@ async function doLogin(nick?: string, avatarUrl?: string) {
   try {
     haptic("medium");
     await user.loginWithWeChat({ nickname: nick, avatar: avatarUrl });
-    uni.reLaunch({ url: "/pages/index/index" });
+    // 首次登录无训练模板 → 进入欢迎引导页
+    await plan.loadTemplates(true);
+    if (plan.hasTemplate) {
+      uni.reLaunch({ url: "/pages/index/index" });
+    } else {
+      uni.reLaunch({ url: "/pages/onboarding/onboarding" });
+    }
   } catch (e) {
     console.error(e);
     uni.showToast({ title: "登录失败", icon: "none" });

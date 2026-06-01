@@ -65,7 +65,28 @@ pnpm dev:mp-weixin           # 产物在 dist/dev/mp-weixin
    - `users`
    - `workout_records`
    - `cardio_records`
-4. 在「云函数」目录右键 `login` / `workout` / `cardio`，分别选择「上传并部署：云端安装依赖」
+   - `workout_templates`
+4. 在「云函数」目录右键 `login` / `workout` / `cardio` / `template`，分别选择「上传并部署：云端安装依赖」
+
+## 自定义训练计划系统
+
+- 首次登录无模板时进入 `onboarding`：可「一键导入推荐计划」或「创建我的训练计划」。
+- `plan-editor` 单页编辑器：周视图卡片 + 底部抽屉选动作（分类 + 智能推荐）+ 滑轮选组数/次数 + 「沿用上一组参数」+ 长按拖拽排序。
+- `template-list` 管理多套模板（新建/编辑/删除/切换启用）。
+- 首页自动读取「启用中」模板当天（按星期）的训练并进入流转。
+
+### workout_templates
+
+| 字段                  | 类型           | 说明                          |
+| --------------------- | -------------- | ----------------------------- |
+| \_id                  | string         | 主键                          |
+| userId                | string         | openid                        |
+| name                  | string         | 模板名                        |
+| active                | boolean        | 是否启用（每人仅一个）        |
+| days                  | object         | 七天计划 `{monday..sunday}`   |
+| days.\*.rest          | boolean        | 是否休息日                    |
+| days.\*.exercises     | PlanExercise[] | 动作配置（含 sets/reps/sort） |
+| createdAt / updatedAt | number         | 时间戳                        |
 
 ## 四、数据库 Schema
 

@@ -38,6 +38,7 @@ exports.main = async (event) => {
         .get();
       const payload = {
         workoutType: event.workoutType,
+        title: event.title || "",
         exercises: event.exercises,
         completed: !!event.completed,
         duration: event.duration | 0,

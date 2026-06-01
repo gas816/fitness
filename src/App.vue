@@ -2,6 +2,7 @@
 import { onLaunch, onShow } from "@dcloudio/uni-app";
 import { initCloud } from "@/utils/cloud";
 import { useUserStore } from "@/stores/user";
+import { usePlanStore } from "@/stores/plan";
 
 onLaunch(async () => {
   initCloud();
@@ -10,6 +11,13 @@ onLaunch(async () => {
   // 未登录则跳转登录页
   if (!user.isLogin) {
     uni.reLaunch({ url: "/pages/login/login" });
+    return;
+  }
+  // 已登录但无训练模板 → 引导页
+  const plan = usePlanStore();
+  await plan.loadTemplates();
+  if (!plan.hasTemplate) {
+    uni.reLaunch({ url: "/pages/onboarding/onboarding" });
   }
 });
 

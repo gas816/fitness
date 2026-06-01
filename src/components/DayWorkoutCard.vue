@@ -45,9 +45,13 @@
           </view>
           <view class="ex-info" @tap="$emit('edit', i)">
             <text class="ex-name">{{ ex.name }}</text>
-            <text class="ex-param" :class="{ cardio: ex.category === 'cardio' }">
+            <text
+              class="ex-param"
+              :class="{ cardio: ex.category === 'cardio' }"
+            >
               <template v-if="ex.category === 'cardio'"
-                >{{ ex.duration || 0 }} 分钟 · {{ ex.intensity || "中等" }}</template
+                >{{ ex.duration || 0 }} 分钟 ·
+                {{ ex.intensity || "中等" }}</template
               >
               <template v-else>{{ ex.sets }} 组 × {{ ex.reps }} 次</template>
             </text>

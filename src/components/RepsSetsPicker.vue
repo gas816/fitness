@@ -27,9 +27,7 @@
         @change="onChange"
       >
         <picker-view-column>
-          <view v-for="n in setRange" :key="n" class="pv-item"
-            >{{ n }} 组</view
-          >
+          <view v-for="n in setRange" :key="n" class="pv-item">{{ n }} 组</view>
         </picker-view-column>
         <picker-view-column>
           <view v-for="(r, i) in repsOptions" :key="i" class="pv-item">{{
